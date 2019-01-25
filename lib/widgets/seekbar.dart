@@ -8,7 +8,6 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart' show Color, Colors;
 
 import 'dart:math' as math;
-import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
