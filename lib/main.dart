@@ -3,7 +3,7 @@ import 'package:zoolvibes/pages/audio_zone_page_view_page.dart';
 import 'package:zoolvibes/pages/big_player_page.dart';
 import 'package:zoolvibes/pages/profile_page.dart';
 import 'package:zoolvibes/pages/user_playlists_page.dart';
-
+import 'package:zoolvibes/widgets/scale_route.dart';
 
 void main() => runApp(MyApp());
 
@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         accentColor: Colors.purple,
         primaryColor: Colors.white,
+        textSelectionHandleColor: Colors.pink,
         primaryColorDark: Colors.purpleAccent,
       ),
       home: MyHomePage(title: 'Zoolvibes'),
@@ -33,14 +34,42 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
   var _currentIndex = 0;
   var _pageController;
-  @override
-  void initState() {
-    super.initState();
+  AnimationController _animationController;
+  Animation<double> _animateIcon;
+  bool isOpened = false;
+
+  initState() {
+    _animationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 100))
+          ..addListener(() {
+            setState(() {});
+          });
+    _animateIcon =
+        Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
     _pageController =
         PageController(initialPage: _currentIndex, keepPage: true);
+    super.initState();
+  }
+
+  @override
+  dispose() {
+    _animationController.dispose();
+    _pageController.dispose();
+
+    super.dispose();
+  }
+
+  animate() {
+    if (!isOpened) {
+      _animationController.forward();
+    } else {
+      _animationController.reverse();
+    }
+    isOpened = !isOpened;
   }
 
   @override
@@ -95,7 +124,6 @@ class _MyHomePageState extends State<MyHomePage> {
             style: Theme.of(context).textTheme.display4,
           )),
           AudioZonePageViewPage(),
-
           Center(
               child: Text(
             'My Music',
@@ -107,7 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          _MiniPlayer(),
+          MiniPlayerPage(),
           BottomNavigationBar(
             fixedColor: Theme.of(context).accentColor,
             currentIndex: _currentIndex,
@@ -127,12 +155,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
   void navigationTapped(int page) {
     setState(() {
       _currentIndex = page;
@@ -142,20 +164,50 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class SearchPageViewPage {
+class MiniPlayerPage extends StatefulWidget {
+  @override
+  _MiniPlayerPageState createState() => _MiniPlayerPageState();
 }
 
-class _MiniPlayer extends StatelessWidget {
-  const _MiniPlayer({
-    Key key,
-  }) : super(key: key);
+class _MiniPlayerPageState extends State<MiniPlayerPage>
+    with SingleTickerProviderStateMixin {
+  AnimationController _animationController;
+  Animation<double> _animateIcon;
+  bool isOpened = false;
+
+  initState() {
+    _animationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 100))
+          ..addListener(() {
+            setState(() {});
+          });
+    _animateIcon =
+        Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
+
+    super.initState();
+  }
+
+  @override
+  dispose() {
+    _animationController.dispose();
+
+    super.dispose();
+  }
+
+  animate() {
+    if (!isOpened) {
+      _animationController.forward();
+    } else {
+      _animationController.reverse();
+    }
+    isOpened = !isOpened;
+  }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => BigPlayerPage()));
+        Navigator.push(context, ScaleRoute(widget: BigPlayerPage()));
       },
       child: Card(
         margin: EdgeInsets.all(0),
@@ -202,12 +254,15 @@ class _MiniPlayer extends StatelessWidget {
                   onPressed: () {},
                 ),
                 IconButton(
-                  icon: Icon(
-                    Icons.pause,
-                    size: 30,
+                  icon: AnimatedIcon(
+                    progress: _animateIcon,
                     color: Theme.of(context).accentColor,
+                    icon: AnimatedIcons.pause_play,
+                    size: 30,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    animate();
+                  },
                 ),
                 IconButton(
                   icon: Icon(

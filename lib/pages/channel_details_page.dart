@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zoolvibes/pages/album_program_details_page.dart';
 import 'package:zoolvibes/widgets/flat_appbar.dart';
 
 class ChannelDetailsPage extends StatefulWidget {
@@ -26,7 +27,7 @@ class _ChannelDetailsPageState extends State<ChannelDetailsPage> {
                       alignment: Alignment.center,
                       children: <Widget>[
                         Padding(
-                          padding: const EdgeInsets.all(32.0),
+                          padding: const EdgeInsets.all(64.0),
                           child: Divider(
                             color: Theme.of(context).accentColor,
                           ),
@@ -101,7 +102,10 @@ class _ChannelDetailsPageState extends State<ChannelDetailsPage> {
     return Center(
       child: GridTile(
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => AlbumProgramDetailsPage()));
+          },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[

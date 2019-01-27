@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zoolvibes/widgets/flat_appbar.dart';
+import 'package:zoolvibes/widgets/scale_route.dart';
 import 'package:zoolvibes/widgets/seekbar.dart';
 
 class BigPlayerPage extends StatefulWidget {
@@ -7,7 +8,39 @@ class BigPlayerPage extends StatefulWidget {
   _BigPlayerPageState createState() => _BigPlayerPageState();
 }
 
-class _BigPlayerPageState extends State<BigPlayerPage> {
+class _BigPlayerPageState extends State<BigPlayerPage>
+    with SingleTickerProviderStateMixin {
+  var favorite = false;
+  bool isOpened = false;
+  AnimationController _animationController;
+  Animation<double> _animateIcon;
+  @override
+  initState() {
+    _animationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 100))
+          ..addListener(() {
+            setState(() {});
+          });
+    _animateIcon =
+        Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
+    super.initState();
+  }
+
+  @override
+  dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  animate() {
+    if (!isOpened) {
+      _animationController.forward();
+    } else {
+      _animationController.reverse();
+    }
+    isOpened = !isOpened;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,22 +82,63 @@ class _BigPlayerPageState extends State<BigPlayerPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 IconButton(
+                  tooltip: 'Open music queue',
                   icon: Icon(
                     Icons.queue_music,
                     color: Theme.of(context).accentColor,
                     size: 30,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (context) {
+                          return ListView.builder(
+                            itemCount: 10,
+                            itemBuilder: (context, position) {
+                              return ListTile(
+                                onTap: () {},
+                                leading: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 16),
+                                      child: Text('${position + 1}'),
+                                    ),
+                                    Container(
+                                      width: 50,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                          color: Colors.grey,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                      child: Icon(
+                                        Icons.music_note,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                title: Text('Track Name '),
+                                subtitle: Text('0${position}:0${position}'),
+                              );
+                            },
+                          );
+                        });
+                  },
                 ),
                 IconButton(
                   icon: Icon(
-                    Icons.favorite_border,
+                    favorite ? Icons.favorite : Icons.favorite_border,
                     color: Theme.of(context).accentColor,
                     size: 30,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {
+                      favorite = !favorite;
+                    });
+                  },
                 ),
                 IconButton(
+                  tooltip: 'Add to Playlist',
                   icon: Icon(
                     Icons.add,
                     color: Theme.of(context).accentColor,
@@ -133,11 +207,14 @@ class _BigPlayerPageState extends State<BigPlayerPage> {
                     onPressed: () {},
                   ),
                   FloatingActionButton(
-                    child: Icon(
-                      Icons.play_arrow,
+                    child: AnimatedIcon(
+                      progress: _animateIcon,
+                      icon: AnimatedIcons.play_pause,
                       size: 40,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      animate();
+                    },
                   ),
                   IconButton(
                     icon: Icon(

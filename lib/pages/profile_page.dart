@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zoolvibes/pages/edit_user_profile_page.dart';
 import 'package:zoolvibes/widgets/flat_appbar.dart';
 
 class UserProfilePage extends StatefulWidget {
@@ -59,7 +60,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
                       color: Theme.of(context).accentColor,
                       width: 5,
                       style: BorderStyle.solid),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (_)=>EditUserProfilePage()));
+                  },
                   textColor: Theme.of(context).accentColor,
                 )
               ],
