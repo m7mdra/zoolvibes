@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:zoolvibes/pages/album_program_details_page.dart';
-import 'package:zoolvibes/widgets/flat_appbar.dart';
 
 class ChannelDetailsPage extends StatefulWidget {
   @override

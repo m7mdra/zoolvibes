@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
-
 class FlatAppBar extends AppBar {
-  var leading;
-  var automaticallyImplyLeading;
-  var title;
-  var actions;
-  var flexibleSpace;
-  var bottom;
-  var backgroundColor;
-  var brightness;
-  var iconTheme;
-  var textTheme;
-  var primary;
-  var centerTitle;
-  var titleSpacing;
-  var toolbarOpacity;
-  var bottomOpacity;
+  final  automaticallyImplyLeading;
+  final  leading;
+  final  title;
+  final  actions;
+  final  flexibleSpace;
+  final  bottom;
+  final  backgroundColor;
+  final  brightness;
+  final  iconTheme;
+  final  textTheme;
+  final  primary;
+  final  centerTitle;
+  final  titleSpacing;
+  final  toolbarOpacity;
+  final  bottomOpacity;
 
   FlatAppBar({
     Key key,
